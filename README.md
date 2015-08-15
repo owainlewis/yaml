@@ -1,5 +1,7 @@
 # YAML
 
+![](https://travis-ci.org/owainlewis/yaml.svg?branch=master)
+
 A YAML library for Clojure based on Snake YAML and yaml-clj
 
 ## Usage
