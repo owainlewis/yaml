@@ -4,6 +4,24 @@
 
 A YAML library for Clojure based on Snake YAML and yaml-clj
 
+[![Clojars Project](http://clojars.org/yaml/latest-version.svg)](http://clojars.org/yaml)
+
+## Install
+
+### Lein
+
+```[yaml "1.0.0"]```
+
+### Maven
+
+```
+<dependency>
+  <groupId>yaml</groupId>
+  <artifactId>yaml</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
 ## Usage
 
 ```clojure
