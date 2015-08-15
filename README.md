@@ -26,19 +26,24 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 ```clojure
 (ns demo.core
+  (:refer-clojure :exclude [load])
   (:require [yaml.core :as yaml]))
-  
+
+;; Note on DSL
+;; yaml/load & yaml/parse-string are identical
+;; yaml/dump & yaml/generate-string are identical
+
 ;; Parse a YAML file
 
 (yaml/from-file "config.yml")
 
 ;; Parse a YAML string
 
-(yaml/parse-string "foo: bar")
+(yaml/load "foo: bar")
 
 ;; Dump YAML
 
-(yaml/generate-string {:foo "bar"})
+(yaml/dump {:foo "bar"})
 
 (yaml/generate-string
   [{:name "John Smith", :age 33}
@@ -65,4 +70,4 @@ This is mainly an updated version of clj-yaml with some updates
 
 Copyright © 2015 Owain Lewis
 
-Distributed under the Eclipse Public License 
+Distributed under the Eclipse Public License

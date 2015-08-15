@@ -1,4 +1,5 @@
 (ns yaml.reader
+ (:refer-clojure :exclude [load])
  (:import (org.yaml.snakeyaml Yaml)))
 
 (def ^:dynamic *keywordize* true)
@@ -37,8 +38,10 @@
   (decode [data] data))
 
 (defn parse-string
-  ([string keywords]
+  ([^String string keywords]
   (binding [*keywordize* keywords]
     (parse-string string)))
-  ([string]
+  ([^String string]
     (decode (.load (Yaml.) string))))
+
+(def load parse-string)

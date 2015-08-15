@@ -11,23 +11,29 @@
   (doto (DumperOptions.)
     (.setDefaultFlowStyle (flow-styles flow-style))))
 
-(defn- make-yaml
+(defn make-yaml
   [& {:keys [dumper-options]}]
   (if dumper-options
-    (Yaml. (apply make-dumper-options
-                  (mapcat (juxt key val)
-                          dumper-options)))
+    (Yaml. ^DumperOptions (apply make-dumper-options
+                                 (mapcat (juxt key val)
+                                         dumper-options)))
     (Yaml.)))
 
 (defprotocol YAMLWriter
   (encode [data]))
 
 (extend-protocol YAMLWriter
+
   clojure.lang.IPersistentMap
   (encode [data]
     (into {}
           (for [[k v] data]
             [(encode k) (encode v)])))
+
+  clojure.lang.IPersistentSet
+    (encode [data]
+      (into #{}
+        (map encode data)))
 
   clojure.lang.IPersistentCollection
   (encode [data]
@@ -44,5 +50,7 @@
   (encode [data] data))
 
 (defn generate-string [data & opts]
-  (.dump (apply make-yaml opts)
-         (encode data)))
+  (.dump ^Yaml (apply make-yaml opts)
+         ^Object (encode data)))
+
+(def dump generate-string)
