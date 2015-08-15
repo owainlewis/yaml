@@ -42,6 +42,13 @@ A YAML library for Clojure based on Snake YAML and yaml-clj
 
 ```
 
+This is mainly an updated version of yaml-clj with some updates
+
+1. Updates snake YAML to latest version
+2. Split reader and writer into separate protocols and files
+3. Ability to read YAML from file in single function
+4. Return vector [] instead of list when parsing java.util.ArrayList
+
 ## License
 
 Copyright © 2015 Owain Lewis
