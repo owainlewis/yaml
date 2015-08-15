@@ -40,11 +40,6 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 (yaml/generate-string {:foo "bar"})
 
-```
-
-### Reading YAML
-
-```clojure
 (yaml/generate-string
   [{:name "John Smith", :age 33}
    {:name "Mary Smith", :age 27}])
