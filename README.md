@@ -2,7 +2,7 @@
 
 ![](https://travis-ci.org/owainlewis/yaml.svg?branch=master)
 
-A YAML library for Clojure based on Snake YAML and yaml-clj
+An updated YAML library for Clojure based on Snake YAML and heavily inspired by yaml-clj
 
 [![Clojars Project](http://clojars.org/yaml/latest-version.svg)](http://clojars.org/yaml)
 
