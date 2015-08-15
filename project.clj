@@ -1,4 +1,4 @@
-(defproject yaml "0.1.0-SNAPSHOT"
+(defproject yaml "1.0.0"
   :description "A YAML library for Clojure"
   :url "http://github.com/owainlewis/yaml"
   :license {:name "Eclipse Public License"
