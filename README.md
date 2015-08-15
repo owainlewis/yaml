@@ -10,15 +10,15 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 ### Lein
 
-```[yaml "1.0.0"]```
+```[io.forward/yaml "1.0.1"]```
 
 ### Maven
 
 ```
 <dependency>
-  <groupId>yaml</groupId>
+  <groupId>io.forward</groupId>
   <artifactId>yaml</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
