@@ -2,7 +2,7 @@
 
 ![](https://travis-ci.org/owainlewis/yaml.svg?branch=master)
 
-An updated YAML library for Clojure based on Snake YAML and heavily inspired by yaml-clj
+An updated YAML library for Clojure based on Snake YAML and heavily inspired by clj-yaml
 
 [![Clojars Project](http://clojars.org/yaml/latest-version.svg)](http://clojars.org/yaml)
 
@@ -42,7 +42,24 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 ```
 
-This is mainly an updated version of yaml-clj with some updates
+### Reading YAML
+
+```clojure
+(yaml/generate-string
+  [{:name "John Smith", :age 33}
+   {:name "Mary Smith", :age 27}])
+"- {name: John Smith, age: 33}\n- {name: Mary Smith, age: 27}\n"
+
+(yaml/parse-string "
+- {name: John Smith, age: 33}
+- name: Mary Smith
+  age: 27
+")
+=> ({:name "John Smith", :age 33}
+    {:name "Mary Smith", :age 27})
+```
+
+This is mainly an updated version of clj-yaml with some updates
 
 1. Updates snake YAML to latest version
 2. Split reader and writer into separate protocols and files
