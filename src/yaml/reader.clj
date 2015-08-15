@@ -1,5 +1,4 @@
 (ns yaml.reader
- (:require [clojure.java.io :as io])
  (:import (org.yaml.snakeyaml Yaml)))
 
 (def ^:dynamic *keywordize* true)
