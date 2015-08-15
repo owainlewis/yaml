@@ -2,6 +2,6 @@
   (:require [clojure.test :refer :all]
             [yaml.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest from-file-test
+  (let [yaml (from-file "test/fixtures/petstore.yaml" true)]
+    (is (= (:schemes yaml) ["http"]))))
