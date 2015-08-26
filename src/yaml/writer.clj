@@ -15,8 +15,8 @@
   [& {:keys [dumper-options]}]
   (if dumper-options
     (Yaml. ^DumperOptions (apply make-dumper-options
-                                 (mapcat (juxt key val)
-                                         dumper-options)))
+                            (mapcat (juxt key val) 
+                              dumper-options)))
     (Yaml.)))
 
 (defprotocol YAMLWriter
