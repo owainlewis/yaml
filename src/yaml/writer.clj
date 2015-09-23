@@ -23,29 +23,23 @@
   (encode [data]))
 
 (extend-protocol YAMLWriter
-
   clojure.lang.IPersistentMap
   (encode [data]
     (into {}
           (for [[k v] data]
             [(encode k) (encode v)])))
-
   clojure.lang.IPersistentSet
     (encode [data]
       (into #{}
         (map encode data)))
-
   clojure.lang.IPersistentCollection
   (encode [data]
     (map encode data))
-
   clojure.lang.Keyword
   (encode [data]
     (name data))
-
   Object
   (encode [data] data)
-
   nil
   (encode [data] data))
 
