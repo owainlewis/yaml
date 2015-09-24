@@ -21,19 +21,15 @@
     (into {}
           (for [[k v] data]
             [(decode-key k) (decode v)])))
-
   java.util.LinkedHashSet
   (decode [data]
     (into #{} data))
-
   java.util.ArrayList
   (decode [data]
     (into []
       (map decode data)))
-
   Object
   (decode [data] data)
-
   nil
   (decode [data] data))
 
