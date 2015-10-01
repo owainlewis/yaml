@@ -39,11 +39,11 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 ;; Parse a YAML string
 
-(yaml/load "foo: bar")
+(yaml/read-string "foo: bar")
 
 ;; Dump YAML
 
-(yaml/dump {:foo "bar"})
+(yaml/generate-string {:foo "bar"})
 
 (yaml/generate-string
   [{:name "John Smith", :age 33}
