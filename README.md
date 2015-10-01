@@ -4,7 +4,7 @@
 
 An updated YAML library for Clojure based on Snake YAML and heavily inspired by clj-yaml
 
-[![Clojars Project](http://clojars.org/yaml/latest-version.svg)](http://clojars.org/yaml)
+[![Clojars Project](http://clojars.org/io.forward/yaml/latest-version.svg)](http://clojars.org/io.forward/yaml)
 
 ## Install
 
