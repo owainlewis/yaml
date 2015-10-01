@@ -46,5 +46,3 @@
 (defn generate-string [data & opts]
   (.dump ^Yaml (apply make-yaml opts)
          ^Object (encode data)))
-
-(def dump generate-string)

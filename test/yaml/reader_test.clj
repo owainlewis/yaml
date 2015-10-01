@@ -110,4 +110,4 @@ the-bin: !!binary 0101")
 (deftest keywordized
   (binding [*keywordize* false]
     (is  (= "items" (-> hashes-lists-yaml parse-string ffirst))))
-  (is  (= "items" (-> hashes-lists-yaml (parse-string false) ffirst))))
+    (is  (= "items" (-> hashes-lists-yaml (parse-string false) ffirst))))

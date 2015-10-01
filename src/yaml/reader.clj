@@ -39,5 +39,3 @@
     (parse-string string)))
   ([^String string]
     (decode (.load (Yaml.) string))))
-
-(def load parse-string)
