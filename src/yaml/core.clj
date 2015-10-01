@@ -1,7 +1,7 @@
 (ns yaml.core
  (:refer-clojure :exclude [load])
  (:require [clojure.java.io :as io]
-           [yaml.reader :refer [parse-string load]]
+           [yaml.reader :refer [parse-string]]
            [yaml.writer :refer [generate-string dump]]))
 
 (defn- safe-read
