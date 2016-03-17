@@ -27,22 +27,23 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 ;; Parse a YAML string
 
-(yaml/read-string "foo: bar")
+(yaml/parse-string "foo: bar")
 
 ;; Dump YAML
 
 (yaml/generate-string {:foo "bar"})
 
-(yaml/generate-string
-  [{:name "John Smith", :age 33}
-   {:name "Mary Smith", :age 27}])
-"- {name: John Smith, age: 33}\n- {name: Mary Smith, age: 27}\n"
+;; Examples
+
+(yaml/generate-string [{:name "John Smith", :age 33} {:name "Mary Smith", :age 27}])
+;; "- {name: John Smith, age: 33}\n- {name: Mary Smith, age: 27}\n"
 
 (yaml/parse-string "
 - {name: John Smith, age: 33}
 - name: Mary Smith
   age: 27
 ")
+
 => ({:name "John Smith", :age 33}
     {:name "Mary Smith", :age 27})
 ```
@@ -56,6 +57,6 @@ This is mainly an updated version of clj-yaml with some updates
 
 ## License
 
-Copyright © 2015 Owain Lewis
+Copyright © 2016 Owain Lewis
 
 Distributed under the Eclipse Public License
