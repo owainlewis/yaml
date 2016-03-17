@@ -18,7 +18,7 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 <dependency>
   <groupId>io.forward</groupId>
   <artifactId>yaml</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
