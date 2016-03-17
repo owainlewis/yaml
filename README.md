@@ -10,7 +10,7 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 ### Lein
 
-```[io.forward/yaml "1.0.1"]```
+```[io.forward/yaml "1.0.2"]```
 
 ### Maven
 
