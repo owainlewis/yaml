@@ -4,23 +4,11 @@
 
 An updated YAML library for Clojure based on Snake YAML and heavily inspired by clj-yaml
 
-[![Clojars Project](http://clojars.org/io.forward/yaml/latest-version.svg)](http://clojars.org/io.forward/yaml)
-
 ## Install
 
 ### Lein
 
-```[io.forward/yaml "1.0.2"]```
-
-### Maven
-
-```
-<dependency>
-  <groupId>io.forward</groupId>
-  <artifactId>yaml</artifactId>
-  <version>1.0.2</version>
-</dependency>
-```
+[![Clojars Project](http://clojars.org/io.forward/yaml/latest-version.svg)](http://clojars.org/io.forward/yaml)
 
 ## Usage
 
