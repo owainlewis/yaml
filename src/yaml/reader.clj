@@ -1,4 +1,6 @@
 (ns yaml.reader
+ (:require [flatland.ordered.set :refer [ordered-set]]
+           [flatland.ordered.map :refer [ordered-map]])
  (:refer-clojure :exclude [load])
  (:import (org.yaml.snakeyaml Yaml)))
 
@@ -18,12 +20,12 @@
 (extend-protocol YAMLReader
   java.util.LinkedHashMap
   (decode [data]
-    (into {}
+    (into (ordered-map)
           (for [[k v] data]
             [(decode-key k) (decode v)])))
   java.util.LinkedHashSet
   (decode [data]
-    (into #{} data))
+    (into (ordered-set) data))
   java.util.ArrayList
   (decode [data]
     (into []
