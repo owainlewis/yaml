@@ -35,6 +35,11 @@
   clojure.lang.IPersistentCollection
   (encode [data]
     (map encode data))
+  clojure.lang.PersistentTreeMap
+  (encode [data]
+    (into (sorted-map)
+          (for [[k v] data]
+            [(encode k) (encode v)])))  
   clojure.lang.Keyword
   (encode [data]
     (name data))
