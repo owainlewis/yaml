@@ -1,4 +1,4 @@
-(defproject io.forward/yaml "1.0.3"
+(defproject io.forward/yaml "1.0.4-SNAPSHOT"
   :description "A YAML library for Clojure"
   :url "http://github.com/owainlewis/yaml"
   :license {:name "Eclipse Public License"
