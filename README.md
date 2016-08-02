@@ -46,6 +46,40 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 => ({:name "John Smith", :age 33}
     {:name "Mary Smith", :age 27})
+
+;; Output Formatting examples
+
+(def data [{:name "John Smith", :age 33} {:name "Mary Smith", :age 27}])
+
+(yaml/generate-string data)
+=> - {age: 33, name: John Smith}
+   - {age: 27, name: Mary Smith}
+
+(yaml/generate-string data :dumper-options {:flow-style :flow})
+=> [{age: 33, name: John Smith}, {age: 27, name: Mary Smith}]
+
+(yaml/generate-string data :dumper-options {:flow-style :block})
+=> - age: 33
+     name: John Smith
+   - age: 27
+     name: Mary Smith
+
+(yaml/generate-string data :dumper-options {:flow-style :flow :scalar-style :single-quoted})
+=> [{'age': !!int '33', 'name': 'John Smith'}, {'age': !!int '27', 'name': 'Mary Smith'}]
+
+Valid values for flow-style are:
+- :auto
+- :block
+- :flow
+
+Valid values for scalar-style are:
+- :double-quoted
+- :single-quoted
+- :literal
+- :folded
+- :plain
+
+All are documented at http://yaml.org/spec/current.html
 ```
 
 This is mainly an updated version of clj-yaml with some updates

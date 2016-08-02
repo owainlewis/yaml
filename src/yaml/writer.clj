@@ -1,22 +1,31 @@
 (ns yaml.writer
- (:import (org.yaml.snakeyaml Yaml DumperOptions DumperOptions$FlowStyle)))
+ (:import (org.yaml.snakeyaml Yaml DumperOptions DumperOptions$FlowStyle DumperOptions$ScalarStyle)))
 
 (def flow-styles
   {:auto DumperOptions$FlowStyle/AUTO
    :block DumperOptions$FlowStyle/BLOCK
    :flow DumperOptions$FlowStyle/FLOW})
 
+(def scalar-styles
+  {:double-quoted DumperOptions$ScalarStyle/DOUBLE_QUOTED
+   :single-quoted DumperOptions$ScalarStyle/SINGLE_QUOTED
+   :literal DumperOptions$ScalarStyle/LITERAL
+   :folded DumperOptions$ScalarStyle/FOLDED
+   :plain DumperOptions$ScalarStyle/PLAIN})
+
 (defn- make-dumper-options
-  [& {:keys [flow-style]}]
-  (doto (DumperOptions.)
-    (.setDefaultFlowStyle (flow-styles flow-style))))
+  [{:keys [flow-style scalar-style]}]
+  (let [options (DumperOptions.)]
+    (when flow-style
+      (.setDefaultFlowStyle options (flow-styles flow-style)))
+    (when scalar-style
+      (.setDefaultScalarStyle options (scalar-styles scalar-style)))
+    options))
 
 (defn make-yaml
   [& {:keys [dumper-options]}]
   (if dumper-options
-    (Yaml. ^DumperOptions (apply make-dumper-options
-                            (mapcat (juxt key val) 
-                              dumper-options)))
+    (Yaml. ^DumperOptions (make-dumper-options dumper-options))
     (Yaml.)))
 
 (defprotocol YAMLWriter
@@ -39,7 +48,7 @@
   (encode [data]
     (into (sorted-map)
           (for [[k v] data]
-            [(encode k) (encode v)])))  
+            [(encode k) (encode v)])))
   clojure.lang.Keyword
   (encode [data]
     (name data))
