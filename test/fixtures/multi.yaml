@@ -1,0 +1,6 @@
+# YAML
+---
+document: this is doc 1
+---
+document: this is doc 2
+...

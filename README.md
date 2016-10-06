@@ -88,6 +88,7 @@ This is mainly an updated version of clj-yaml with some updates
 2. Split reader and writer into separate protocols and files
 3. Ability to read YAML from file in single function
 4. Return vector [] instead of list when parsing java.util.ArrayList
+5. Ability to parse multiple documents
 
 ## License
 

@@ -2,6 +2,9 @@
   (:require [clojure.test :refer :all]
             [yaml.reader :refer :all]))
 
+(def multiple-docs
+  "foo\n---\nbar\n...")
+
 (def nested-hash-yaml
   "root:\n  childa: a\n  childb: \n    grandchild: \n      greatgrandchild: bar\n")
 
@@ -52,6 +55,11 @@ the-bin: !!binary 0101")
 ? Mark McGwire
 ? Sammy Sosa
 ? Ken Griff")
+
+(deftest parse-multiple-documents
+  (testing "should handle multiple yaml documents"
+    (is (= ["foo" "bar"]
+           (parse-documents multiple-docs)))))
 
 (deftest parse-hash
   (let [parsed (parse-string "foo: bar")]

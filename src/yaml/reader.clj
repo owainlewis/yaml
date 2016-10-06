@@ -2,14 +2,15 @@
  (:require [flatland.ordered.set :refer [ordered-set]]
            [flatland.ordered.map :refer [ordered-map]])
  (:refer-clojure :exclude [load])
- (:import (org.yaml.snakeyaml Yaml)))
+ (:import [org.yaml.snakeyaml Yaml]
+          [org.yaml.snakeyaml.composer ComposerException]))
 
 (def ^:dynamic *keywordize* true)
 
 (defprotocol YAMLReader
   (decode [data]))
 
-(defn decode-key
+(defn- decode-key
   "When *keywords* is bound to true decode
    map keys into keywords else leave them as strings"
   [k]
@@ -35,9 +36,20 @@
   nil
   (decode [data] data))
 
+(defn parse-documents
+  "The YAML spec allows for multiple documents. This will take a string containing multiple yaml
+   docs and return a vector containing each document"
+  [^String yaml-documents]
+  (mapv decode
+    (.loadAll (Yaml.) yaml-documents)))
+
 (defn parse-string
+  "Parse a yaml input string. If multiple documents are found it will return a vector of documents"
   ([^String string keywords]
   (binding [*keywordize* keywords]
     (parse-string string)))
   ([^String string]
-    (decode (.load (Yaml.) string))))
+   (try
+     (decode (.load (Yaml.) string))
+   (catch ComposerException e
+     (parse-documents string)))))
