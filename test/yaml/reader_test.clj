@@ -56,6 +56,10 @@ the-bin: !!binary 0101")
 ? Sammy Sosa
 ? Ken Griff")
 
+(def emojis-yaml
+  ;; Unicode SMILING FACE WITH OPEN MOUTH AND SMILING EYES
+  (apply str (Character/toChars 128516)))
+
 (deftest parse-multiple-documents
   (testing "should handle multiple yaml documents"
     (is (= ["foo" "bar"]
@@ -119,3 +123,6 @@ the-bin: !!binary 0101")
   (binding [*keywordize* false]
     (is  (= "items" (-> hashes-lists-yaml parse-string ffirst))))
     (is  (= "items" (-> hashes-lists-yaml (parse-string false) ffirst))))
+
+(deftest emojis
+  (is (pos? (count (parse-string emojis-yaml)))))
