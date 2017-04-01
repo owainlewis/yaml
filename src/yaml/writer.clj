@@ -1,5 +1,7 @@
 (ns yaml.writer
- (:import (org.yaml.snakeyaml Yaml DumperOptions DumperOptions$FlowStyle DumperOptions$ScalarStyle)))
+  (:require [flatland.ordered.set :refer [ordered-set]]
+            [flatland.ordered.map :refer [ordered-map]])
+  (:import (org.yaml.snakeyaml Yaml DumperOptions DumperOptions$FlowStyle DumperOptions$ScalarStyle)))
 
 (def flow-styles
   {:auto DumperOptions$FlowStyle/AUTO
@@ -32,6 +34,17 @@
   (encode [data]))
 
 (extend-protocol YAMLWriter
+  flatland.ordered.set.OrderedSet
+  (encode [data]
+    (java.util.LinkedHashSet.
+     (into (ordered-set)
+           (map encode data))))
+  flatland.ordered.map.OrderedMap
+  (encode [data]
+    (java.util.LinkedHashMap.
+     (into (ordered-map)
+           (for [[k v] data]
+             [(encode k) (encode v)]))))
   clojure.lang.IPersistentMap
   (encode [data]
     (into {}
