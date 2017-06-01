@@ -19,7 +19,7 @@
 (defn from-file
   "Reads a YAML file and returns the decoded result"
   ([f]
-    (from-file f false))
+    (from-file f true))
   ([f keywords]
   (when-let [contents (safe-read f)]
     (parse-string contents keywords))))
