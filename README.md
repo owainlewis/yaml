@@ -29,6 +29,9 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 
 (yaml/parse-string "foo: bar")
 
+;; Optionally pass `true` as a second argument to from-file or parse-string to keywordize all keys
+(yaml/parse-string "foo: bar" true)
+
 ;; Dump YAML
 
 (yaml/generate-string {:foo "bar"})
