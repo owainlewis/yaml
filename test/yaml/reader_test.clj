@@ -120,9 +120,16 @@ the-bin: !!binary 0101")
     (is (= (Class/forName "[B") (type (:the-bin parsed))))))
 
 (deftest keywordized
+  (is  (= "items" (-> hashes-lists-yaml (parse-string false) ffirst)))
   (binding [*keywordize* false]
     (is  (= "items" (-> hashes-lists-yaml parse-string ffirst))))
-    (is  (= "items" (-> hashes-lists-yaml (parse-string false) ffirst))))
+
+  (testing "custom keywordize function"
+    (binding [*keywordize* #(str % "-extra")]
+      (let [obj (parse-string hashes-lists-yaml)]
+        (is (= ["items-extra"] (keys obj)))
+        (is (= ["part_no-extra" "descrip-extra" "price-extra" "quantity-extra"]
+               (-> obj (get "items-extra") first keys)))))))
 
 (deftest emojis
   (is (pos? (count (parse-string emojis-yaml)))))
