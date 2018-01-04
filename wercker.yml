@@ -1,0 +1,7 @@
+box: clojure
+test:
+  steps:
+    - script:
+        name: lein-test
+        code: |
+          lein test
