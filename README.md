@@ -1,6 +1,6 @@
 # YAML
 
-[![CircleCI](https://circleci.com/gh/owainlewis/yaml.svg?style=svg)](https://circleci.com/gh/owainlewis/yaml)
+[![wercker status](https://app.wercker.com/status/d86182149da45799012e55c1d3b3eb72/s/master "wercker status")](https://app.wercker.com/project/byKey/d86182149da45799012e55c1d3b3eb72)
 
 An updated YAML library for Clojure based on Snake YAML and heavily inspired by clj-yaml
 
