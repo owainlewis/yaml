@@ -11,12 +11,16 @@
   (decode [data]))
 
 (defn- decode-key
-  "When *keywords* is bound to true decode
-   map keys into keywords else leave them as strings"
+  "When *keywordize* is bound to true decode map keys into keywords else leave them
+  as strings. When *keywordize* is a function, calls function on the key."
   [k]
-  (if *keywordize*
-    (keyword k)
-  k))
+  (cond (true? *keywordize*)
+        (keyword k)
+
+        (fn? *keywordize*)
+        (*keywordize* k)
+
+        :else k))
 
 (extend-protocol YAMLReader
   java.util.LinkedHashMap
@@ -44,7 +48,11 @@
     (.loadAll (Yaml.) yaml-documents)))
 
 (defn parse-string
-  "Parse a yaml input string. If multiple documents are found it will return a vector of documents"
+  "Parse a yaml input string. If multiple documents are found it will return a vector of documents
+
+  When keywords is a true (default), map keys are converted to keywords. When
+  keywords is a function, invokes the function on the map keys.
+  "
   ([^String string keywords]
   (binding [*keywordize* keywords]
     (parse-string string)))
