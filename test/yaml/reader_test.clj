@@ -1,6 +1,7 @@
 (ns yaml.reader-test
   (:require [clojure.test :refer :all]
-            [yaml.reader :refer :all]))
+            [yaml.reader :refer :all])
+  (:import [org.yaml.snakeyaml.error YAMLException]))
 
 (def multiple-docs
   "foo\n---\nbar\n...")
@@ -59,6 +60,11 @@ the-bin: !!binary 0101")
 (def emojis-yaml
   ;; Unicode SMILING FACE WITH OPEN MOUTH AND SMILING EYES
   (apply str (Character/toChars 128516)))
+
+(def custom-tags-yaml
+  "--- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+  en: TEXT IN ENGLISH
+  de: TEXT IN DEUTSCH")
 
 (deftest parse-multiple-documents
   (testing "should handle multiple yaml documents"
@@ -120,7 +126,7 @@ the-bin: !!binary 0101")
     (is (= (Class/forName "[B") (type (:the-bin parsed))))))
 
 (deftest keywordized
-  (is  (= "items" (-> hashes-lists-yaml (parse-string false) ffirst)))
+  (is  (= "items" (-> hashes-lists-yaml (parse-string :keywords false) ffirst)))
   (binding [*keywordize* false]
     (is  (= "items" (-> hashes-lists-yaml parse-string ffirst))))
 
@@ -133,3 +139,12 @@ the-bin: !!binary 0101")
 
 (deftest emojis
   (is (pos? (count (parse-string emojis-yaml)))))
+
+(deftest unknown-tags
+  (testing "with the regular old parser "
+    (is (thrown-with-msg? YAMLException #"Invalid tag: !ruby/hash:ActiveSupport::HashWithIndifferentAccess"
+          (parse-string custom-tags-yaml))))
+  (testing "with the passthrough-constructor"
+    (is (= {:en "TEXT IN ENGLISH"
+            :de "TEXT IN DEUTSCH"}
+           (parse-string custom-tags-yaml :constructor passthrough-constructor)))))

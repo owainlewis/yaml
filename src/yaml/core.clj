@@ -22,4 +22,4 @@
     (from-file f true))
   ([f keywords]
   (when-let [contents (safe-read f)]
-    (parse-string contents keywords))))
+    (parse-string contents :keywords keywords))))
