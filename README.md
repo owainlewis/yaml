@@ -30,7 +30,15 @@ An updated YAML library for Clojure based on Snake YAML and heavily inspired by 
 (yaml/parse-string "foo: bar")
 
 ;; Optionally pass `true` as a second argument to from-file or parse-string to keywordize all keys
-(yaml/parse-string "foo: bar" true)
+(yaml/parse-string "foo: bar" :keywords true)
+
+;; Parsing YAML with unknown tags
+(yaml/parse-string "--- !foobar
+  foo: HELLO WORLD")
+
+;; This will parse properly
+(yaml/parse-string "--- !foobar
+  foo: HELLO WORLD" :constructor yaml.reader/passthrough-constructor)
 
 ;; Dump YAML
 
