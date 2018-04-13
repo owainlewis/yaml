@@ -70,10 +70,3 @@
       (decode (.load (Yaml. constructor) string))
       (catch ComposerException e
         (parse-documents string)))))
-
-(comment
-  (parse-string (slurp "test/fixtures/tags.yaml"))
-
-  (parse-string (slurp "test/fixtures/petstore.yaml"))
-
-  )
