@@ -19,10 +19,13 @@ public class PassthroughConstructor extends Constructor {
             switch (node.getNodeId()) {
             case scalar:
                 tag = Tag.STR;
+                break;
             case sequence:
                 tag = Tag.SEQ;
+                break;
             default:
                 tag = Tag.MAP;
+                break;
             }
 
             node.setTag(tag);
