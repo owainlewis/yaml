@@ -64,7 +64,15 @@ the-bin: !!binary 0101")
 (def custom-tags-yaml
   "--- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
   en: TEXT IN ENGLISH
-  de: TEXT IN DEUTSCH")
+  de: TEXT IN DEUTSCH
+  list: !CustomList
+    - foo
+    - bar
+    - baz
+  number: !CustomScalar 1234
+  string: !CustomScalar custom-string
+  date:   !Date custom-string
+  expires_at: !ruby/object:DateTime 2017-05-09 05:27:43.000000000")
 
 (deftest parse-multiple-documents
   (testing "should handle multiple yaml documents"
@@ -146,5 +154,10 @@ the-bin: !!binary 0101")
           (parse-string custom-tags-yaml))))
   (testing "with the passthrough-constructor"
     (is (= {:en "TEXT IN ENGLISH"
-            :de "TEXT IN DEUTSCH"}
+            :de "TEXT IN DEUTSCH"
+            :list ["foo" "bar" "baz"]
+            :number "1234"              ;NOTE: tagged numbers are interpreted as strings
+            :string "custom-string"
+            :date "custom-string"
+            :expires_at "2017-05-09 05:27:43.000000000"}
            (parse-string custom-tags-yaml :constructor passthrough-constructor)))))
