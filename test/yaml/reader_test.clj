@@ -161,3 +161,11 @@ the-bin: !!binary 0101")
             :date "custom-string"
             :expires_at "2017-05-09 05:27:43.000000000"}
            (parse-string custom-tags-yaml :constructor passthrough-constructor)))))
+
+(deftest parse-string-thread-safety
+  (testing "should not throw any exceptions when parsing objects concurrently"
+    (let [results (doall (for [x (range 100)]
+                           (future (parse-string inline-list-yaml))))]
+      (doseq [result results]
+        ;; when non-threadsafe, Exceptions are thrown unexpectedly
+        (is (= ["milk" "pumpkin pie" "eggs" "juice"] @result))))))

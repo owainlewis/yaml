@@ -7,12 +7,12 @@
           [org.yaml.snakeyaml.composer ComposerException]))
 
 (def ^:dynamic *keywordize* true)
-(def ^:dynamic *constructor* (Constructor.))
+(def ^:dynamic *constructor* (fn [] (Constructor.)))
 (def passthrough-constructor
   "Custom constructor that will not barf on unknown YAML tags. This constructor
   will treat YAML objects with unknown tags with the underlying type (i.e. map,
   sequence, scalar) "
-  (PassthroughConstructor.))
+  (fn [] (PassthroughConstructor.)))
 
 (defprotocol YAMLReader
   (decode [data]))
@@ -52,7 +52,7 @@
    docs and return a vector containing each document"
   [^String yaml-documents]
   (mapv decode
-    (.loadAll (Yaml. *constructor*) yaml-documents)))
+    (.loadAll (Yaml. (*constructor*)) yaml-documents)))
 
 (defn parse-string
   "Parse a yaml input string. If multiple documents are found it will return a vector of documents
@@ -60,13 +60,14 @@
   When keywords is a true (default), map keys are converted to keywords. When
   keywords is a function, invokes the function on the map keys.
 
-  When a custom :constructor is provided, it's used to construct objects.
+  When a custom :constructor is provided, it's used to construct objects. Should
+  be a 0-arity function that returns a constructor.
   "
   [^String string & {:keys [keywords constructor]
                      :or   {keywords    *keywordize*
                             constructor *constructor*}}]
   (binding [*keywordize* keywords]
     (try
-      (decode (.load (Yaml. constructor) string))
+      (decode (.load (Yaml. (constructor)) string))
       (catch ComposerException e
         (parse-documents string)))))
