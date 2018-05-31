@@ -23,6 +23,11 @@
     (is (= "- {age: 33, name: jon}\n- {age: 44, name: boo}\n"
            (generate-string data :dumper-options {:scalar-style :plain})))))
 
+(deftest preserve-namespaces
+  (let [data {:foo/bar "baz"}]
+    (is (= "{foo/bar: baz}\n"
+           (generate-string data)))))
+
 (deftest writing-order
   (let [om (into (ordered-map) (partition 2 (range 0 20)))
         os (into (ordered-set) (range 0 10))

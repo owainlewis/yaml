@@ -30,6 +30,12 @@
     (Yaml. ^DumperOptions (make-dumper-options dumper-options))
     (Yaml.)))
 
+(defn- keyword->string
+  [key]
+  (if (nil? (namespace key))
+      (name key)
+      (str (namespace key) "/" (name key))))
+
 (defprotocol YAMLWriter
   (encode [data]))
 
@@ -64,7 +70,7 @@
             [(encode k) (encode v)])))
   clojure.lang.Keyword
   (encode [data]
-    (name data))
+    (keyword->string data))
   Object
   (encode [data] data)
   nil
