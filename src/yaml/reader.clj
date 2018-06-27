@@ -21,12 +21,8 @@
   "When *keywordize* is bound to true decode map keys into keywords else leave them
   as strings. When *keywordize* is a function, calls function on the key."
   [k]
-  (cond (true? *keywordize*)
-        (keyword k)
-
-        (fn? *keywordize*)
-        (*keywordize* k)
-
+  (cond (true? *keywordize*) (keyword k)
+        (fn? *keywordize*) (*keywordize* k)
         :else k))
 
 (extend-protocol YAMLReader
