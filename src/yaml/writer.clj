@@ -16,12 +16,16 @@
    :plain DumperOptions$ScalarStyle/PLAIN})
 
 (defn- make-dumper-options
-  [{:keys [flow-style scalar-style]}]
+  [{:keys [flow-style scalar-style split-lines width]}]
   (let [options (DumperOptions.)]
     (when flow-style
       (.setDefaultFlowStyle options (flow-styles flow-style)))
     (when scalar-style
       (.setDefaultScalarStyle options (scalar-styles scalar-style)))
+    (when (some? split-lines)
+      (.setSplitLines options split-lines))
+    (when (some? width)
+      (.setWidth options width))
     options))
 
 (defn make-yaml
