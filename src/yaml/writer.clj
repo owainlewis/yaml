@@ -43,11 +43,13 @@
   flatland.ordered.set.OrderedSet
   (encode [data]
     (java.util.LinkedHashSet.
+     ^flatland.ordered.set.OrderedSet 
      (into (ordered-set)
            (map encode data))))
   flatland.ordered.map.OrderedMap
   (encode [data]
     (java.util.LinkedHashMap.
+     ^flatland.ordered.map.OrderedMap
      (into (ordered-map)
            (for [[k v] data]
              [(encode k) (encode v)]))))
