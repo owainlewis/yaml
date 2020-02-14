@@ -103,6 +103,4 @@ This is mainly an updated version of clj-yaml with some updates
 
 ## License
 
-Copyright © 2016 Owain Lewis
-
 Distributed under the Eclipse Public License
