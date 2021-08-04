@@ -10,4 +10,5 @@
                                     :username :env/clojars_username
                                     :password :env/clojars_password
                                     :sign-releases true}]]
-  :java-source-paths ["src-java"])
+  :java-source-paths ["src-java"]
+  :javac-options ["-target" "1.7", "-source" "1.7"])
