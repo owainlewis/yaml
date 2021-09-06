@@ -1,6 +1,8 @@
 # YAML
 
 [![CircleCI](https://circleci.com/gh/owainlewis/yaml/tree/master.svg?style=svg)](https://circleci.com/gh/owainlewis/yaml/tree/master)
+
+### About
 An updated YAML library for Clojure based on Snake YAML and heavily inspired by clj-yaml
 
 ## Install
