@@ -9,6 +9,6 @@
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
                                     :username :env/clojars_username
                                     :password :env/clojars_password
-                                    :sign-releases true}]]
+                                    :sign-releases false}]]
   :java-source-paths ["src-java"]
   :javac-options ["-target" "1.7", "-source" "1.7"])
