@@ -26,7 +26,7 @@ jobs:
           root: /home/circleci/
           paths:
             - .m2
-            - owainlewis/java-http-clj
+            - owainlewis
       # run tests!
       - run: lein with-profiles dev test
   deploy:
