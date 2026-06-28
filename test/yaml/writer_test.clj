@@ -23,6 +23,12 @@
     (is (= "- {age: 33, name: jon}\n- {age: 44, name: boo}\n"
            (generate-string data :dumper-options {:scalar-style :plain})))))
 
+(deftest invalid-dump-opts
+  (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Invalid YAML flow style"
+                        (generate-string {:foo "bar"} :dumper-options {:flow-style :wat})))
+  (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Invalid YAML scalar style"
+                        (generate-string {:foo "bar"} :dumper-options {:scalar-style :wat}))))
+
 (deftest preserve-namespaces
   (let [data {:foo/bar "baz"}]
     (is (= "{foo/bar: baz}\n"

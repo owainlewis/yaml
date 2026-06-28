@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install Clojure CLI
+        run: |
+          curl -fsSLO https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh
+          chmod +x linux-install.sh
+          sudo ./linux-install.sh
+      - name: Check formatting
+        run: clojure -M:fmt/check
+      - name: Run tests
+        run: clojure -T:build test
+      - name: Build jar
+        run: clojure -T:build jar

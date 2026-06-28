@@ -1,109 +1,193 @@
-# YAML
+# yaml
 
-CI Build Status:
+[![test](https://github.com/owainlewis/yaml/actions/workflows/test.yml/badge.svg)](https://github.com/owainlewis/yaml/actions/workflows/test.yml)
 
-[![CircleCI](https://circleci.com/gh/owainlewis/yaml/tree/master.svg?style=svg)](https://circleci.com/gh/owainlewis/yaml/tree/master)
+A small Clojure YAML library built on SnakeYAML.
 
-### About
-An updated YAML library for Clojure based on Snake YAML and heavily inspired by clj-yaml
+It reads YAML strings and files into Clojure data, writes Clojure data back to
+YAML, preserves ordered maps and sets, supports multi-document YAML, and can
+optionally pass through unknown tags.
 
 ## Install
 
-### Lein
+`deps.edn`:
 
-[![Clojars Project](http://clojars.org/io.forward/yaml/latest-version.svg)](http://clojars.org/io.forward/yaml)
+```clojure
+io.forward/yaml {:mvn/version "1.0.12-SNAPSHOT"}
+```
+
+Leiningen consumers can still depend on the Maven artifact:
+
+```clojure
+[io.forward/yaml "1.0.12-SNAPSHOT"]
+```
+
+The current source version is `1.0.12-SNAPSHOT`.
 
 ## Usage
 
 ```clojure
 (ns demo.core
   (:refer-clojure :exclude [load])
-  (:require [yaml.core :as yaml]))
-
-;; Note on DSL
-;; yaml/load & yaml/parse-string are identical
-;; yaml/dump & yaml/generate-string are identical
-
-;; Parse a YAML file
-
-(yaml/from-file "config.yml")
-
-;; Parse a YAML string
-
-(yaml/parse-string "foo: bar")
-
-;; Optionally pass `true` as a second argument to from-file or parse-string to keywordize all keys
-(yaml/parse-string "foo: bar" :keywords true)
-
-;; Parsing YAML with unknown tags
-(yaml/parse-string "--- !foobar
-  foo: HELLO WORLD")
-
-;; This will parse properly
-(yaml/parse-string "--- !foobar
-  foo: HELLO WORLD" :constructor yaml.reader/passthrough-constructor)
-
-;; Dump YAML
-
-(yaml/generate-string {:foo "bar"})
-
-;; Examples
-
-(yaml/generate-string [{:name "John Smith", :age 33} {:name "Mary Smith", :age 27}])
-;; "- {name: John Smith, age: 33}\n- {name: Mary Smith, age: 27}\n"
-
-(yaml/parse-string "
-- {name: John Smith, age: 33}
-- name: Mary Smith
-  age: 27
-")
-
-=> ({:name "John Smith", :age 33}
-    {:name "Mary Smith", :age 27})
-
-;; Output Formatting examples
-
-(def data [{:name "John Smith", :age 33} {:name "Mary Smith", :age 27}])
-
-(yaml/generate-string data)
-=> - {age: 33, name: John Smith}
-   - {age: 27, name: Mary Smith}
-
-(yaml/generate-string data :dumper-options {:flow-style :flow})
-=> [{age: 33, name: John Smith}, {age: 27, name: Mary Smith}]
-
-(yaml/generate-string data :dumper-options {:flow-style :block})
-=> - age: 33
-     name: John Smith
-   - age: 27
-     name: Mary Smith
-
-(yaml/generate-string data :dumper-options {:flow-style :flow :scalar-style :single-quoted})
-=> [{'age': !!int '33', 'name': 'John Smith'}, {'age': !!int '27', 'name': 'Mary Smith'}]
-
-Valid values for flow-style are:
-- :auto
-- :block
-- :flow
-
-Valid values for scalar-style are:
-- :double-quoted
-- :single-quoted
-- :literal
-- :folded
-- :plain
-
-All are documented at http://yaml.org/spec/current.html
+  (:require [yaml.core :as yaml]
+            [yaml.reader :as yaml-reader]))
 ```
 
-This is mainly an updated version of clj-yaml with some updates
+Parse a YAML string:
 
-1. Updates snake YAML to latest version
-2. Split reader and writer into separate protocols and files
-3. Ability to read YAML from file in single function
-4. Return vector [] instead of list when parsing java.util.ArrayList
-5. Ability to parse multiple documents
+```clojure
+(yaml/parse-string "foo: bar")
+;; => {:foo "bar"}
+```
+
+Parse without keywordizing keys:
+
+```clojure
+(yaml/parse-string "foo: bar" :keywords false)
+;; => {"foo" "bar"}
+```
+
+Parse with a custom key function:
+
+```clojure
+(yaml/parse-string "foo: bar" :keywords #(str "cfg/" %))
+;; => {"cfg/foo" "bar"}
+```
+
+Parse a YAML file:
+
+```clojure
+(yaml/from-file "config.yml")
+```
+
+`from-file` accepts the same options as `parse-string`:
+
+```clojure
+(yaml/from-file "config.yml" :keywords false)
+```
+
+Parse multiple YAML documents:
+
+```clojure
+(yaml/parse-string "foo\n---\nbar\n...")
+;; => ["foo" "bar"]
+```
+
+Parse YAML with unknown tags:
+
+```clojure
+(yaml/parse-string "--- !custom-tag\nfoo: bar"
+                   :constructor yaml-reader/passthrough-constructor)
+;; => {:foo "bar"}
+```
+
+Generate YAML:
+
+```clojure
+(yaml/generate-string {:foo "bar"})
+;; => "{foo: bar}\n"
+```
+
+Generate block-style YAML:
+
+```clojure
+(yaml/generate-string [{:name "John Smith" :age 33}
+                       {:name "Mary Smith" :age 27}]
+                      :dumper-options {:flow-style :block})
+;; => "- age: 33\n  name: John Smith\n- age: 27\n  name: Mary Smith\n"
+```
+
+Valid `:flow-style` values:
+
+- `:auto`
+- `:block`
+- `:flow`
+
+Valid `:scalar-style` values:
+
+- `:double-quoted`
+- `:single-quoted`
+- `:literal`
+- `:folded`
+- `:plain`
+
+Other supported dumper options:
+
+- `:split-lines`
+- `:width`
+
+## Notes
+
+- Map keys are keywordized by default when they are strings.
+- Non-string keys, such as numeric YAML keys, are preserved.
+- Missing files return `nil` from `from-file`.
+- Invalid dumper options throw `ExceptionInfo`.
+- Unknown YAML tags throw by default. Use `yaml.reader/passthrough-constructor`
+  when you want to keep the underlying scalar, sequence, or map value.
+
+## Development
+
+Run tests:
+
+```sh
+clojure -T:build test
+```
+
+Check formatting:
+
+```sh
+clojure -M:fmt/check
+```
+
+Format code:
+
+```sh
+clojure -M:fmt/fix
+```
+
+Build a jar:
+
+```sh
+clojure -T:build jar
+```
+
+Install locally:
+
+```sh
+clojure -T:build install
+```
+
+Deploy to Clojars:
+
+```sh
+CLOJARS_USERNAME=... CLOJARS_PASSWORD=... clojure -T:build deploy
+```
+
+Release from GitHub Actions:
+
+1. Set `CLOJARS_USERNAME` and `CLOJARS_PASSWORD` as repository secrets.
+2. Create and push a version tag.
+
+```sh
+git tag v1.0.12
+git push origin v1.0.12
+```
+
+The release workflow uses the tag without the leading `v` as the artifact
+version.
+
+## CI
+
+GitHub Actions runs:
+
+- `clojure -M:fmt/check`
+- `clojure -T:build test`
+- `clojure -T:build jar`
+
+CircleCI has been removed.
+
+Leiningen has been replaced by the Clojure CLI, `deps.edn`, and `tools.build`.
 
 ## License
 
-Distributed under the Eclipse Public License
+Eclipse Public License 1.0.

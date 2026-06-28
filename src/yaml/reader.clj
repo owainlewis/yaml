@@ -1,13 +1,14 @@
 (ns yaml.reader
- (:require [flatland.ordered.set :refer [ordered-set]]
-           [flatland.ordered.map :refer [ordered-map]])
- (:refer-clojure :exclude [load])
- (:import [org.yaml.snakeyaml Yaml]
-          [org.yaml.snakeyaml.constructor Constructor PassthroughConstructor]
-          [org.yaml.snakeyaml.composer ComposerException]))
+  (:require [flatland.ordered.set :refer [ordered-set]]
+            [flatland.ordered.map :refer [ordered-map]])
+  (:refer-clojure :exclude [load])
+  (:import [org.yaml.snakeyaml Yaml]
+           [org.yaml.snakeyaml.constructor Constructor PassthroughConstructor]
+           [org.yaml.snakeyaml.composer ComposerException]
+           [org.yaml.snakeyaml LoaderOptions]))
 
 (def ^:dynamic *keywordize* true)
-(def ^:dynamic *constructor* (fn [] (Constructor.)))
+(def ^:dynamic *constructor* (fn [] (Constructor. (LoaderOptions.))))
 (def passthrough-constructor
   "Custom constructor that will not barf on unknown YAML tags. This constructor
   will treat YAML objects with unknown tags with the underlying type (i.e. map,
@@ -21,7 +22,7 @@
   "When *keywordize* is bound to true decode map keys into keywords else leave them
   as strings. When *keywordize* is a function, calls function on the key."
   [k]
-  (cond (true? *keywordize*) (keyword k)
+  (cond (and (true? *keywordize*) (string? k)) (keyword k)
         (fn? *keywordize*) (*keywordize* k)
         :else k))
 
@@ -37,7 +38,7 @@
   java.util.ArrayList
   (decode [data]
     (into []
-      (map decode data)))
+          (map decode data)))
   Object
   (decode [data] data)
   nil
@@ -48,7 +49,7 @@
    docs and return a vector containing each document"
   [^String yaml-documents]
   (mapv decode
-    (.loadAll (Yaml. (*constructor*)) yaml-documents)))
+        (.loadAll (Yaml. (*constructor*)) yaml-documents)))
 
 (defn parse-string
   "Parse a yaml input string. If multiple documents are found it will return a vector of documents

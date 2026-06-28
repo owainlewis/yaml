@@ -3,6 +3,7 @@ package org.yaml.snakeyaml.constructor;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.LoaderOptions;
 
 /**
  * Implementation of Constructor that ignores YAML tags.
@@ -36,6 +37,7 @@ public class PassthroughConstructor extends Constructor {
     }
 
     public PassthroughConstructor() {
+        super(new LoaderOptions());
         // Add a catch-all to catch any unidentifiable nodes
         this.yamlMultiConstructors.put("", new PassthroughConstruct());
     }
