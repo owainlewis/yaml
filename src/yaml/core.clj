@@ -1,8 +1,7 @@
 (ns yaml.core
- (:require [clojure.java.io :as io]
-           [yaml.reader :as reader]
-           [yaml.writer :as writer]))
-
+  (:require [clojure.java.io :as io]
+            [yaml.reader :as reader]
+            [yaml.writer :as writer]))
 
 (def generate-string
   writer/generate-string)
@@ -17,10 +16,15 @@
   (when (.exists (io/file f))
     (slurp f)))
 
+(defn- normalize-from-file-options
+  [opts]
+  (if (and (= 1 (count opts))
+           (not (keyword? (first opts))))
+    [:keywords (first opts)]
+    opts))
+
 (defn from-file
   "Reads a YAML file and returns the decoded result"
-  ([f]
-    (from-file f true))
-  ([f keywords]
+  [f & opts]
   (when-let [contents (safe-read f)]
-    (parse-string contents :keywords keywords))))
+    (apply parse-string contents (normalize-from-file-options opts))))

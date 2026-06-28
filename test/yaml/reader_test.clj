@@ -35,6 +35,9 @@ items:
 (def inline-hash-yaml
   "{name: John Smith, age: 33}")
 
+(def numeric-key-yaml
+  "1: one\n2: two\n")
+
 (def list-of-hashes-yaml "
 - {name: John Smith, age: 33}
 - name: Mary Smith
@@ -138,6 +141,10 @@ the-bin: !!binary 0101")
   (binding [*keywordize* false]
     (is  (= "items" (-> hashes-lists-yaml parse-string ffirst))))
 
+  (testing "does not keywordize non-string keys"
+    (is (= {1 "one" 2 "two"}
+           (parse-string numeric-key-yaml))))
+
   (testing "custom keywordize function"
     (binding [*keywordize* #(str % "-extra")]
       (let [obj (parse-string hashes-lists-yaml)]
@@ -151,7 +158,7 @@ the-bin: !!binary 0101")
 (deftest unknown-tags
   (testing "with the regular old parser "
     (is (thrown-with-msg? YAMLException #"Invalid tag: !ruby/hash:ActiveSupport::HashWithIndifferentAccess"
-          (parse-string custom-tags-yaml))))
+                          (parse-string custom-tags-yaml))))
   (testing "with the passthrough-constructor"
     (is (= {:en "TEXT IN ENGLISH"
             :de "TEXT IN DEUTSCH"

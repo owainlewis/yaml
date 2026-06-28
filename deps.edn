@@ -1,0 +1,24 @@
+{:paths ["src" "target/classes"]
+ :deps {org.clojure/clojure {:mvn/version "1.12.5"}
+        org.yaml/snakeyaml {:mvn/version "2.6"}
+        org.flatland/ordered {:mvn/version "1.15.12"}}
+ :aliases
+ {:test
+  {:extra-paths ["test"]
+   :extra-deps {io.github.cognitect-labs/test-runner
+                {:git/tag "v0.5.1"
+                 :git/sha "dfb30dd6605cb6c0efc275e1df1736f6e90d4d73"}}
+   :main-opts ["-m" "cognitect.test-runner"]}
+
+  :fmt/check
+  {:extra-deps {dev.weavejester/cljfmt {:mvn/version "0.16.4"}}
+   :main-opts ["-m" "cljfmt.main" "check" "src" "test" "build.clj"]}
+
+  :fmt/fix
+  {:extra-deps {dev.weavejester/cljfmt {:mvn/version "0.16.4"}}
+   :main-opts ["-m" "cljfmt.main" "fix" "src" "test" "build.clj"]}
+
+  :build
+  {:deps {io.github.clojure/tools.build {:mvn/version "0.10.14"}
+          slipset/deps-deploy {:mvn/version "0.2.5"}}
+   :ns-default build}}}

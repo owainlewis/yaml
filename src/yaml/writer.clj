@@ -19,9 +19,17 @@
   [{:keys [flow-style scalar-style split-lines width]}]
   (let [options (DumperOptions.)]
     (when flow-style
-      (.setDefaultFlowStyle options (flow-styles flow-style)))
+      (if-let [style (flow-styles flow-style)]
+        (.setDefaultFlowStyle options style)
+        (throw (ex-info "Invalid YAML flow style"
+                        {:flow-style flow-style
+                         :valid-styles (set (keys flow-styles))}))))
     (when scalar-style
-      (.setDefaultScalarStyle options (scalar-styles scalar-style)))
+      (if-let [style (scalar-styles scalar-style)]
+        (.setDefaultScalarStyle options style)
+        (throw (ex-info "Invalid YAML scalar style"
+                        {:scalar-style scalar-style
+                         :valid-styles (set (keys scalar-styles))}))))
     (when (some? split-lines)
       (.setSplitLines options split-lines))
     (when (some? width)
@@ -37,8 +45,8 @@
 (defn- keyword->string
   [key]
   (if (nil? (namespace key))
-      (name key)
-      (str (namespace key) "/" (name key))))
+    (name key)
+    (str (namespace key) "/" (name key))))
 
 (defprotocol YAMLWriter
   (encode [data]))
@@ -47,7 +55,7 @@
   flatland.ordered.set.OrderedSet
   (encode [data]
     (java.util.LinkedHashSet.
-     ^flatland.ordered.set.OrderedSet 
+     ^flatland.ordered.set.OrderedSet
      (into (ordered-set)
            (map encode data))))
   flatland.ordered.map.OrderedMap
@@ -63,9 +71,9 @@
           (for [[k v] data]
             [(encode k) (encode v)])))
   clojure.lang.IPersistentSet
-    (encode [data]
-      (into #{}
-        (map encode data)))
+  (encode [data]
+    (into #{}
+          (map encode data)))
   clojure.lang.IPersistentCollection
   (encode [data]
     (map encode data))
