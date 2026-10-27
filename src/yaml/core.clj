@@ -9,6 +9,9 @@
 (def parse-string
   reader/parse-string)
 
+(def parse-documents
+  reader/parse-documents)
+
 (defn- safe-read
   "Try and read a file. If it does not exist then return nil rather
    than an exception"
@@ -28,3 +31,10 @@
   [f & opts]
   (when-let [contents (safe-read f)]
     (apply parse-string contents (normalize-from-file-options opts))))
+
+(defn to-file
+  "Writes `data` to file `f` as YAML. Accepts the same options as
+   `generate-string`. Returns `f`."
+  [f data & opts]
+  (spit f (apply generate-string data opts))
+  f)

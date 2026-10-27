@@ -14,3 +14,12 @@
       (is (vector? yml))))
   (testing "should return nil for missing files"
     (is (nil? (yaml/from-file "test/fixtures/missing.yaml")))))
+
+(deftest to-file-test
+  (let [f (java.io.File/createTempFile "yaml-test" ".yaml")]
+    (try
+      (yaml/to-file f {:name "x" :tags ["a" "b"]} :dumper-options {:flow-style :block})
+      (is (= "name: x\ntags:\n- a\n- b\n" (slurp f)))
+      (is (= {:name "x" :tags ["a" "b"]} (yaml/from-file f)))
+      (finally
+        (.delete f)))))

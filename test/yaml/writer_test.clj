@@ -38,9 +38,9 @@
   (let [om (into (ordered-map) (partition 2 (range 0 20)))
         os (into (ordered-set) (range 0 10))
         v  (into [] (range 0 10))]
-    (= "0: 1\n2: 3\n4: 5\n6: 7\n8: 9\n10: 11\n12: 13\n14: 15\n16: 17\n18: 19\n"
-       (generate-string om :dumper-options {:flow-style :block}))
-    (= "!!set\n0: null\n1: null\n2: null\n3: null\n4: null\n5: null\n6: null\n7: null\n8: null\n9: null\n"
-       (generate-string os :dumper-options {:flow-style :block}))
-    (= "- 0\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n"
-       (generate-string v :dumper-options {:flow-style :block}))))
+    (is (= "0: 1\n2: 3\n4: 5\n6: 7\n8: 9\n10: 11\n12: 13\n14: 15\n16: 17\n18: 19\n"
+           (generate-string om :dumper-options {:flow-style :block})))
+    (is (= "!!set\n0: null\n1: null\n2: null\n3: null\n4: null\n5: null\n6: null\n7: null\n8: null\n9: null\n"
+           (generate-string os :dumper-options {:flow-style :block})))
+    (is (= "- 0\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n"
+           (generate-string v :dumper-options {:flow-style :block})))))

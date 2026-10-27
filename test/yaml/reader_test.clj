@@ -176,3 +176,41 @@ the-bin: !!binary 0101")
       (doseq [result results]
         ;; when non-threadsafe, Exceptions are thrown unexpectedly
         (is (= ["milk" "pumpkin pie" "eggs" "juice"] @result))))))
+
+(deftest custom-tags
+  (let [doc "price: !money 12.50\nlines: !upper [a, b]\nmeta: !wrap {name: x}\n"
+        tags {"!money" bigdec
+              "!upper" (fn [v] (mapv #(.toUpperCase ^String %) v))
+              "!wrap" (fn [m] {:wrapped m})}]
+    (testing "tagged values are passed to their handler as Clojure data"
+      (is (= {:price 12.50M
+              :lines ["A" "B"]
+              :meta {:wrapped {:name "x"}}}
+             (parse-string doc :tags tags))))
+    (testing "handlers see keys decoded with the :keywords option"
+      (is (= {"meta" {:wrapped {"name" "x"}}}
+             (select-keys (parse-string doc :tags tags :keywords false) ["meta"]))))
+    (testing "unregistered tags still throw by default"
+      (is (thrown? YAMLException
+                   (parse-string "a: !other 1" :tags tags))))
+    (testing "unregistered tags pass through with the passthrough constructor"
+      (is (= {:a "1" :b 12.50M}
+             (parse-string "a: !other 1\nb: !money 12.50"
+                           :tags tags
+                           :constructor passthrough-constructor))))
+    (testing "tags work across multiple documents"
+      (is (= [1.5M 2.5M]
+             (parse-string "!money 1.5\n---\n!money 2.5" :tags tags))))
+    (testing "tagged-constructor can be used directly"
+      (is (= {:price 12.50M}
+             (select-keys (parse-string doc :constructor (tagged-constructor tags)) [:price]))))))
+
+(deftest parse-documents-options
+  (testing "parse-documents honours :keywords"
+    (is (= [{"a" 1} {"b" 2}]
+           (parse-documents "a: 1\n---\nb: 2" :keywords false)))))
+
+(deftest multi-document-fallback-uses-constructor
+  (testing "the multi-document fallback keeps a custom constructor"
+    (is (= ["x" "y"]
+           (parse-string "!t x\n---\n!t y" :constructor passthrough-constructor)))))

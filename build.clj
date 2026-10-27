@@ -4,7 +4,7 @@
             [deps-deploy.deps-deploy :as deploy]))
 
 (def lib 'io.forward/yaml)
-(def version (or (System/getenv "VERSION") "1.0.12-SNAPSHOT"))
+(def version (or (System/getenv "VERSION") "1.1.0-SNAPSHOT"))
 (def class-dir "target/classes")
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
 (def basis (delay (b/create-basis {:project "deps.edn"})))
@@ -19,7 +19,8 @@
   [_]
   (b/javac {:basis @basis
             :src-dirs ["src-java"]
-            :class-dir class-dir}))
+            :class-dir class-dir
+            :javac-opts ["--release" "11"]}))
 
 (defn test
   "Compile Java support classes and run tests."
