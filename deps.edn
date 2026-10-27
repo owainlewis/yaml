@@ -1,6 +1,6 @@
 {:paths ["src" "target/classes"]
  :deps {org.clojure/clojure {:mvn/version "1.12.5"}
-        org.yaml/snakeyaml {:mvn/version "2.6"}
+        org.yaml/snakeyaml {:mvn/version "2.7"}
         org.flatland/ordered {:mvn/version "1.15.12"}}
  :aliases
  {:test

@@ -1,28 +1,34 @@
 # yaml
 
-[![test](https://github.com/owainlewis/yaml/actions/workflows/test.yml/badge.svg)](https://github.com/owainlewis/yaml/actions/workflows/test.yml)
+[![CI](https://github.com/owainlewis/yaml/actions/workflows/ci.yml/badge.svg)](https://github.com/owainlewis/yaml/actions/workflows/ci.yml)
+[![Clojars Project](https://img.shields.io/clojars/v/io.forward/yaml.svg)](https://clojars.org/io.forward/yaml)
 
-A small Clojure YAML library built on SnakeYAML.
+A small, fast Clojure YAML library built on SnakeYAML 2.
 
-It reads YAML strings and files into Clojure data, writes Clojure data back to
-YAML, preserves ordered maps and sets, supports multi-document YAML, and can
-optionally pass through unknown tags.
+- Reads YAML strings and files into Clojure data, with keyword keys by default
+- Writes Clojure data back to YAML, with control over flow and scalar style
+- Preserves the order of maps and sets
+- Handles multi-document YAML
+- Lets you register handlers for custom tags such as `!money`, or pass unknown tags through
+- Safe by default: SnakeYAML 2 refuses to instantiate arbitrary Java classes from global tags
 
 ## Install
+
+Use the version shown on the Clojars badge above.
 
 `deps.edn`:
 
 ```clojure
-io.forward/yaml {:mvn/version "1.0.12-SNAPSHOT"}
+io.forward/yaml {:mvn/version "VERSION"}
 ```
 
-Leiningen consumers can still depend on the Maven artifact:
+Leiningen:
 
 ```clojure
-[io.forward/yaml "1.0.12-SNAPSHOT"]
+[io.forward/yaml "VERSION"]
 ```
 
-The current source version is `1.0.12-SNAPSHOT`.
+Requires Java 11 or newer. See [CHANGELOG.md](CHANGELOG.md) for what is in the next release.
 
 ## Usage
 
@@ -73,6 +79,22 @@ Parse multiple YAML documents:
 ;; => ["foo" "bar"]
 ```
 
+Parse every document explicitly, with the same options:
+
+```clojure
+(yaml/parse-documents "a: 1\n---\nb: 2" :keywords false)
+;; => [{"a" 1} {"b" 2}]
+```
+
+Handle custom tags. Each handler receives the tagged value as Clojure data:
+
+```clojure
+(yaml/parse-string "price: !money 12.50\ntags: !upper [a, b]"
+                   :tags {"!money" bigdec
+                          "!upper" (fn [xs] (mapv clojure.string/upper-case xs))})
+;; => {:price 12.50M, :tags ["A" "B"]}
+```
+
 Parse YAML with unknown tags:
 
 ```clojure
@@ -80,6 +102,9 @@ Parse YAML with unknown tags:
                    :constructor yaml-reader/passthrough-constructor)
 ;; => {:foo "bar"}
 ```
+
+`:tags` and `:constructor yaml-reader/passthrough-constructor` can be combined:
+registered tags go to their handler and every other tag passes through.
 
 Generate YAML:
 
@@ -95,6 +120,12 @@ Generate block-style YAML:
                        {:name "Mary Smith" :age 27}]
                       :dumper-options {:flow-style :block})
 ;; => "- age: 33\n  name: John Smith\n- age: 27\n  name: Mary Smith\n"
+```
+
+Write YAML to a file:
+
+```clojure
+(yaml/to-file "out.yml" {:foo "bar"} :dumper-options {:flow-style :block})
 ```
 
 Valid `:flow-style` values:
@@ -127,67 +158,17 @@ Other supported dumper options:
 
 ## Development
 
-Run tests:
-
 ```sh
-clojure -T:build test
+make test        # clojure -T:build test
+make fmt-check   # clojure -M:fmt/check
+make fmt         # clojure -M:fmt/fix
+make jar         # clojure -T:build jar
 ```
 
-Check formatting:
-
-```sh
-clojure -M:fmt/check
-```
-
-Format code:
-
-```sh
-clojure -M:fmt/fix
-```
-
-Build a jar:
-
-```sh
-clojure -T:build jar
-```
-
-Install locally:
-
-```sh
-clojure -T:build install
-```
-
-Deploy to Clojars:
-
-```sh
-CLOJARS_USERNAME=... CLOJARS_PASSWORD=... clojure -T:build deploy
-```
-
-Release from GitHub Actions:
-
-1. Set `CLOJARS_USERNAME` and `CLOJARS_PASSWORD` as repository secrets.
-2. Create and push a version tag.
-
-```sh
-git tag v1.0.12
-git push origin v1.0.12
-```
-
-The release workflow uses the tag without the leading `v` as the artifact
-version.
-
-## CI
-
-GitHub Actions runs:
-
-- `clojure -M:fmt/check`
-- `clojure -T:build test`
-- `clojure -T:build jar`
-
-CircleCI has been removed.
-
-Leiningen has been replaced by the Clojure CLI, `deps.edn`, and `tools.build`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full checks and the release process.
 
 ## License
 
-Eclipse Public License 1.0.
+Copyright © 2015-2026 Owain Lewis and contributors.
+
+Distributed under the Eclipse Public License 1.0.
